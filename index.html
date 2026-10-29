@@ -53,11 +53,6 @@ main{max-width:1440px;margin:0 auto;padding:12px 28px 40px}
 .drop p{margin:0 auto 20px;color:var(--slate);max-width:56ch}
 .drop svg{color:var(--accent-ink)}
 
-.samples{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--slate);font-size:13px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.chip{display:inline-flex;align-items:baseline;gap:8px;padding:6px 12px;border:1px solid var(--rule);border-radius:999px;background:var(--paper);cursor:pointer;font:500 13px var(--sans);color:var(--ink);transition:border-color .12s,background .12s}
-.chip:hover{border-color:var(--accent);background:var(--accent-soft)}
-.chip .dim{font:400 11.5px var(--mono);color:var(--slate)}
 
 /* ---------- tabs ---------- */
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 14px}
@@ -780,34 +775,6 @@ function addPasted(text){
 }
 function openPaste(){ $('#pasteModal').hidden = false; $('#pasteText').focus(); }
 function closePaste(){ $('#pasteModal').hidden = true; }
-
-
-function loadSamples(names){
-  let last = null;
-  for (const n of names) {
-    const smp = SAMPLES.find(x => x.name === n); if (!smp) continue;
-    let f = state.files.find(x => x.name === n && x.sample);
-    if (!f) { f = buildFile(smp.name, smp.text); f.sample = true; state.files.push(f); }
-    last = f;
-  }
-  if (last) { state.activeId = last.id; render(); }
-}
-(function(){
-  const box = $('#sampleChips');
-  const mk = (label, meta, names) => {
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
-    const a = document.createElement('span'); a.textContent = label; b.append(a);
-    if (meta) { const d = document.createElement('span'); d.className = 'dim'; d.textContent = meta; b.append(d); }
-    b.onclick = () => loadSamples(names); box.append(b);
-  };
-  SAMPLES.forEach(smp => {
-    const rows = parseCSV(smp.text);
-    mk(smp.name, `${rows.length - 1}×${rows[0].length}`, [smp.name]);
-  });
-  mk('ทั้งหมด', '', SAMPLES.map(x => x.name));
-  const my = document.createElement('button'); my.type = 'button'; my.className = 'chip';
-  my.textContent = 'ตัวอย่างวางจาก MySQL'; my.onclick = () => addPasted(MYSQL_SAMPLE); box.append(my);
-})();
 
 /* ============================================================
    Wiring
